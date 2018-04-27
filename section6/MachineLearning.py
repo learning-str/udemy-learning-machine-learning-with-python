@@ -63,6 +63,28 @@ for line in trainingDataFile:
     ])
 trainingDataFile.close()
 
-print trainingData
-
 neuralNetwork = NeuralNetwork()
+
+# preperation of display
+positionTokyoLearning = [[], []]
+positionKanagawaLearning = [[], []]
+for data in trainingData:
+    if data[2] < 0.5:
+        positionTokyoLearning[0].append(data[1] + referPoint1)
+        positionTokyoLearning[1].append(data[0] + referPoint0)
+    else:
+        positionKanagawaLearning[0].append(data[1] + referPoint1)
+        positionKanagawaLearning[1].append(data[0] + referPoint0)
+
+# plot
+plt.scatter(
+    positionTokyoLearning[0], positionTokyoLearning[1],
+    c = 'red', label = 'tokyoLearn', marker = '+'
+)
+plt.scatter(
+    positionKanagawaLearning[0], positionKanagawaLearning[1],
+    c = 'blue', label = 'kanagawaLearn', marker = '+'
+)
+
+plt.legend()
+plt.show()
