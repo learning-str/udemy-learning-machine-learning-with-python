@@ -52,6 +52,12 @@ class NeuralNetwork:
     def learn(self, inputData):
         print inputData
 
+        outputData = self.commit([inputData[0], inputData[1]])
+        correctValue = inputData[2]
+
+        print outputData
+        print correctValue - outputData
+
 referPoint0 = 34.5
 referPoint1 = 137.5
 
