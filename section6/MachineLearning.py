@@ -43,20 +43,53 @@ class NeuralNetwork:
         self.middleLayer[1].setInput(self.inputLayer[2] * self.weightIM[2][1])
 
         # middleLayer -> outputLayer
-        self.outputLayer.setInput(self.middleLayer[0].getOutput() * self.weightMO[0])
-        self.outputLayer.setInput(self.middleLayer[1].getOutput() * self.weightMO[1])
+        self.outputLayer.setInput(
+            self.middleLayer[0].getOutput() * self.weightMO[0],
+        )
+        self.outputLayer.setInput(
+            self.middleLayer[1].getOutput() * self.weightMO[1],
+        )
         self.outputLayer.setInput(self.middleLayer[2] * self.weightMO[2])
 
         return self.outputLayer.getOutput()
 
     def learn(self, inputData):
         print inputData
-
-        outputData = self.commit([inputData[0], inputData[1]])
+        learningRate = 0.3
         correctValue = inputData[2]
 
-        print outputData
-        print correctValue - outputData
+        # output
+        outputData = self.commit([inputData[0], inputData[1]])
+
+        # outputLayer -> middleLayer
+        deltaWeightMO = (correctValue - outputData) * outputData *\
+            (1.0 - outputData)
+        oldWeightMO = list(self.weightMO)
+        self.weightMO[0] += self.middleLayer[0].output * deltaWeightMO *\
+            learningRate
+        self.weightMO[1] += self.middleLayer[1].output * deltaWeightMO *\
+            learningRate
+        self.weightMO[2] += self.middleLayer[2] * deltaWeightMO * learningRate
+
+        # middleLayer -> inputLayer
+        deltaWeightIM = [
+            deltaWeightMO * oldWeightMO[0] * self.middleLayer[0].output *\
+                (1.0 - self.middleLayer[0].output),
+            deltaWeightMO * oldWeightMO[1] * self.middleLayer[1].output *\
+                (1.0 - self.middleLayer[1].output),
+        ]
+        self.weightIM[0][0] += self.inputLayer[0] * deltaWeightIM[0] *\
+            learningRate
+        self.weightIM[0][1] += self.inputLayer[0] * deltaWeightIM[1] *\
+            learningRate
+        self.weightIM[1][0] += self.inputLayer[1] * deltaWeightIM[0] *\
+            learningRate
+        self.weightIM[1][1] += self.inputLayer[1] * deltaWeightIM[1] *\
+            learningRate
+        self.weightIM[2][0] += self.inputLayer[2] * deltaWeightIM[0] *\
+            learningRate
+        self.weightIM[2][1] += self.inputLayer[2] * deltaWeightIM[1] *\
+            learningRate
 
 referPoint0 = 34.5
 referPoint1 = 137.5
@@ -68,7 +101,7 @@ for line in trainingDataFile:
     trainingData.append([
         float(line[0]) - referPoint0,
         float(line[1]) - referPoint1,
-        int(line[2])
+        int(line[2]),
     ])
 trainingDataFile.close()
 
@@ -76,6 +109,8 @@ neuralNetwork = NeuralNetwork()
 
 # learning
 neuralNetwork.learn(trainingData[0])
+print neuralNetwork.weightIM
+print neuralNetwork.weightMO
 
 # preperation of display
 positionTokyoLearning = [[], []]
@@ -91,11 +126,11 @@ for data in trainingData:
 # plot
 plt.scatter(
     positionTokyoLearning[0], positionTokyoLearning[1],
-    c = 'red', label = 'tokyoLearn', marker = '+'
+    c = 'red', label = 'tokyoLearn', marker = '+',
 )
 plt.scatter(
     positionKanagawaLearning[0], positionKanagawaLearning[1],
-    c = 'blue', label = 'kanagawaLearn', marker = '+'
+    c = 'blue', label = 'kanagawaLearn', marker = '+',
 )
 
 plt.legend()
