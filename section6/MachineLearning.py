@@ -112,6 +112,26 @@ for t in range(0, 1000):
         neuralNetwork.learn(data)
 print neuralNetwork.weightIM
 print neuralNetwork.weightMO
+dataToCommit = [
+    [34.6, 138.0], [34.6, 138.18], [35.4, 138.0], [34.98, 138.1],
+    [35.0, 138.25], [35.4, 137.6], [34.98, 137.52], [34.5, 138.5],
+    [35.4, 138.1],
+]
+
+for data in dataToCommit:
+    data[0] -= referPoint0
+    data[1] -= referPoint1
+
+positionTokyoLearned = [[], []]
+positionKanagawaLearned = [[], []]
+
+for data in dataToCommit:
+    if neuralNetwork.commit(data) < 0.5:
+        positionTokyoLearned[0].append(data[1] + referPoint1)
+        positionTokyoLearned[1].append(data[0] + referPoint0)
+    else:
+        positionKanagawaLearned[0].append(data[1] + referPoint1)
+        positionKanagawaLearned[1].append(data[0] + referPoint0)
 
 # preperation of display
 positionTokyoLearning = [[], []]
@@ -127,12 +147,21 @@ for data in trainingData:
 # plot
 plt.scatter(
     positionTokyoLearning[0], positionTokyoLearning[1],
-    c = 'red', label = 'tokyoLearn', marker = '+',
+    c = 'red', label = 'TokyoLearn', marker = '+',
 )
 plt.scatter(
     positionKanagawaLearning[0], positionKanagawaLearning[1],
-    c = 'blue', label = 'kanagawaLearn', marker = '+',
+    c = 'blue', label = 'KanagawaLearn', marker = '+',
 )
+plt.scatter(
+    positionTokyoLearned[0], positionTokyoLearned[1],
+    c = 'red', label = 'Tokyo', marker = 'o',
+)
+plt.scatter(
+    positionKanagawaLearned[0], positionKanagawaLearned[1],
+    c = 'blue', label = 'Kanagawa', marker = 'o',
+)
+
 
 plt.legend()
 plt.show()
