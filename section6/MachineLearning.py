@@ -49,6 +49,9 @@ class NeuralNetwork:
 
         return self.outputLayer.getOutput()
 
+    def learn(self, inputData):
+        print inputData
+
 referPoint0 = 34.5
 referPoint1 = 137.5
 
@@ -64,6 +67,9 @@ for line in trainingDataFile:
 trainingDataFile.close()
 
 neuralNetwork = NeuralNetwork()
+
+# learning
+neuralNetwork.learn(trainingData[0])
 
 # preperation of display
 positionTokyoLearning = [[], []]
