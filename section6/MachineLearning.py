@@ -54,7 +54,6 @@ class NeuralNetwork:
         return self.outputLayer.getOutput()
 
     def learn(self, inputData):
-        print inputData
         learningRate = 0.3
         correctValue = inputData[2]
 
@@ -108,7 +107,9 @@ trainingDataFile.close()
 neuralNetwork = NeuralNetwork()
 
 # learning
-neuralNetwork.learn(trainingData[0])
+for t in range(0, 1000):
+    for data in trainingData:
+        neuralNetwork.learn(data)
 print neuralNetwork.weightIM
 print neuralNetwork.weightMO
 
